@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="data.txt" />
+    <Text Include="data2.txt" />
     <Text Include="User.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -20,11 +20,12 @@ int menuflag = 0;       //菜单选择flag
 Message mess;
 
 
-IMAGE bg1,bg2,bg3,bg4;               //背景图片预定义
+IMAGE bg1,bg2,bg3,bg4;               //背景图片预定义(带0的为点击后的效果图)
 IMAGE medicine_bg;					 //装饰图片与安装的按钮
 IMAGE bg_goon, bg_back, bg_goon_0, bg_back_0;
 IMAGE bg_last, bg_next,bg_last_0,bg_next_0;
-IMAGE bg1_1, bg1_2, bg1_3, bg1_4;
+IMAGE bg1_1, bg1_2, bg1_3, bg1_4,bg1_1_0, bg1_2_0, bg1_3_0, bg1_4_0;
+IMAGE bg2_1, bg2_1_0;
 
 
 void HideCursor();							//隐藏光标函数
@@ -40,18 +41,24 @@ void Show_Detail(Medicine);					//显示细节
 void Input();								//向文件输入
 bool kmp_search(string text, string m, int &pos);//kmp算法查找病症
 const vector<int> * kmp_next(string &m);	//寻找下一个
+void Delete();								//删除
+void revise();								//修改
 
-void main()									//主函数
+int main()									//主函数
 {
+	int flag;
 	user u;
-	u.begin();
+	flag=u.begin();
 	initgraph(Width*NUM, High*NUM);
-	while (1)
+	if (flag == 1)
 	{
-		Init();
+		while (1)
+		{
+			Init();
+		}
 	}
-
 	closegraph();
+	return 0;
 }
 void WaitUser()
 {
@@ -64,14 +71,14 @@ void WaitUser()
 			if (((23 * Width <= m.x) && (m.x <= 23 * Width + 150)) && (m.uMsg == WM_LBUTTONDOWN))
 			{
 				if ((27 * High <= m.y) && (m.y <= 30 * High))
+					putimage(23 * Width, 27 * High, &bg_back_0);
+					Sleep(100);
 					menuflag = 1;
 				return;
 			}
 		}
 	
 }
-
-
 void Cure()
 {
 	
@@ -133,7 +140,7 @@ void Init()
 	//mciSendString("play bkmusic repeat", NULL, 0, NULL);
 	HWND hwnd = GetHWnd();//获取窗口句柄
 	SetWindowText(hwnd, _T("中医药百科"));
-	loadimage(&bg1, _T("img\\bg1.jpg"));   //读取图片信息（未施工完成**）
+	loadimage(&bg1, _T("img\\bg1.jpg"));   //读取图片信息
 	loadimage(&bg2, _T("img\\bg2.jpg"));
 	loadimage(&bg3, _T("img\\bg3.jpg"));
 	loadimage(&bg4, _T("img\\bg4.jpg"));
@@ -145,6 +152,14 @@ void Init()
 	loadimage(&bg_goon, _T("img\\goon.jpg"));
 	loadimage(&bg_last, _T("img\\last.jpg"));
 	loadimage(&bg_next, _T("img\\next.jpg"));
+	loadimage(&bg_back_0, _T("img\\back_0.jpg"));
+	loadimage(&bg_goon_0, _T("img\\goon_0.jpg"));
+	loadimage(&bg_last_0, _T("img\\last_0.jpg"));
+	loadimage(&bg_next_0, _T("img\\next_0.jpg"));
+	loadimage(&bg1_1_0, _T("img\\bg1_1_0.jpg"));
+	loadimage(&bg1_2_0, _T("img\\bg1_1_0.jpg"));
+	loadimage(&bg1_3_0, _T("img\\bg1_1_0.jpg"));
+	loadimage(&bg1_4_0, _T("img\\bg1_1_0.jpg"));
 
 
 	BeginBatchDraw();
@@ -184,7 +199,8 @@ void Menu()									//主菜单
 			{
 				if ((100 <= m.y) && (m.y <= 160))
 				{
-
+					putimage(Main_x, 100, &bg1_1_0);
+					FlushBatchDraw();
 					Sleep(100);
 					Show_All(1);				//定位到第一页
 					menuflag = 1;
@@ -192,8 +208,7 @@ void Menu()									//主菜单
 				}
 				if ((200 <= m.y) && (m.y <= 260))
 				{
-					BeginBatchDraw();
-					putimage(0, 0, &bg2);
+					putimage(Main_x, 100, &bg1_2_0);
 					FlushBatchDraw();
 					Sleep(100);
 					Cure();
@@ -202,8 +217,7 @@ void Menu()									//主菜单
 				}
 				if ((300 <= m.y) && (m.y <= 360))
 				{
-					BeginBatchDraw();
-					putimage(0, 0, &bg3);
+					putimage(Main_x, 100, &bg1_3_0);
 					FlushBatchDraw();
 					Sleep(100);
 					exit(-1);
@@ -212,7 +226,7 @@ void Menu()									//主菜单
 				else if ((400 <= m.y) && (m.y <= 460))
 				{
 					BeginBatchDraw();
-					putimage(0, 0, &bg4);
+					putimage(Main_x, 100, &bg1_4_0);
 					FlushBatchDraw();
 					Sleep(100);
 					exit(-1);
@@ -392,10 +406,11 @@ int Show_All(int page)              //严重问题（第一个是空的）
 			}
 
 
+			
 			if (((25 * Width <= m.x) && (m.x <= 30 * Width)) && ((30 * High <= m.y) && (m.y <= 32 * High)) && (m.uMsg == WM_LBUTTONDOWN))//返回桌面
 			{
-
-				putimage(900, 540, &bg_back_0);
+		
+				putimage(25 * Width, 30 * High, &bg_back_0);	
 				FlushBatchDraw();
 				Sleep(100);
 				Init();
@@ -403,8 +418,11 @@ int Show_All(int page)              //严重问题（第一个是空的）
 			}
 			if (((25 * Width <= m.x) && (m.x <= 30 * Width)) && ((26 * High <= m.y) && (m.y <= 28 * High)) && (m.uMsg == WM_LBUTTONDOWN))//下一页
 			{
+				
+				
+				
 				BeginBatchDraw();
-				putimage(900, 485, &bg_last_0);
+				putimage(25 * Width, 26 * High, &bg_next_0);
 				FlushBatchDraw();
 				Sleep(80);
 				page++;
@@ -413,7 +431,7 @@ int Show_All(int page)              //严重问题（第一个是空的）
 			if (((25 * Width <= m.x) && (m.x <= 30 * Width)) && ((22 * High <= m.y) && (m.y <= 24 * High)) && (m.uMsg == WM_LBUTTONDOWN))//上一页
 			{
 				BeginBatchDraw();
-				putimage(900, 485, &bg_next_0);
+				putimage(25 * Width, 22 * High, &bg_last_0);
 				FlushBatchDraw();
 				Sleep(80);
 				page--;
@@ -445,6 +463,7 @@ void Show_Detail(Medicine a)
 			{
 				if ((27 * High <= m.y) && (m.y <= 30 * High))
 					menuflag = 1;
+				Sleep(100);
 				return;
 			}
 		}
@@ -619,8 +638,8 @@ void WaitView(int page)
 
 			if (((25 * Width <= m.x) && (m.x <= 30 * Width)) && ((30 * High <= m.y) && (m.y <= 32 * High)) && (m.uMsg == WM_LBUTTONDOWN))//返回桌面
 			{
-
-				putimage(900, 540, &bg_back_0);
+		
+				putimage(25 * Width, 30 * High, &bg_back_0);	
 				FlushBatchDraw();
 				Sleep(100);
 				Init();
@@ -628,8 +647,11 @@ void WaitView(int page)
 			}
 			if (((25 * Width <= m.x) && (m.x <= 30 * Width)) && ((26 * High <= m.y) && (m.y <= 28 * High)) && (m.uMsg == WM_LBUTTONDOWN))//下一页
 			{
+				
+				
+				
 				BeginBatchDraw();
-				putimage(900, 485, &bg_last_0);
+				putimage(25 * Width, 26 * High, &bg_next_0);
 				FlushBatchDraw();
 				Sleep(80);
 				page++;
@@ -638,7 +660,7 @@ void WaitView(int page)
 			if (((25 * Width <= m.x) && (m.x <= 30 * Width)) && ((22 * High <= m.y) && (m.y <= 24 * High)) && (m.uMsg == WM_LBUTTONDOWN))//上一页
 			{
 				BeginBatchDraw();
-				putimage(900, 485, &bg_next_0);
+				putimage(25 * Width, 22 * High, &bg_last_0);
 				FlushBatchDraw();
 				Sleep(80);
 				page--;
@@ -667,7 +689,6 @@ const vector<int> * kmp_next(string &m)
 	}
 	return &next;
 }
-
 bool kmp_search(string text, string m, int &pos)
 {
 	const vector<int> * next = kmp_next(m);
@@ -688,22 +709,68 @@ bool kmp_search(string text, string m, int &pos)
 	if (tp == text.size())
 		return false;
 }
-
 void Delete()
 {
-	char s1[50], s2[100], temp[100];
+	
+	char s1[50];
 	int i, pot = 0, flag = 0;
 	putimage(0, 0, &bg3);
-	settextstyle(40, 0, _T("黑体"));
+	settextstyle(40, 0, _T("微软雅黑"));
 	outtextxy(50, 100, _T("请输入要删除的药材名称"));
 	FlushBatchDraw();
 	InputBox(s1, 25, _T("请输入药名"), false);
 	
-	mess.Delete(s1);
+	flag=mess.Delete(s1);
+	if (flag)
+	{
+		outtextxy(50, 300, _T("删除成功"));
+	}
+	else
+	{
+		outtextxy(50, 300, _T("未查询到该药材"));
+	}
+
 	WaitUser();
 }
+void revise()
+{
+	int flag = 0,a;
+	char s1[100],s2[5];
+	outtextxy(50, 100, _T("请输入要要修改的药材名称"));
+	InputBox(s1, 20, _T("请输入要修改的药材名称"));
+	InputBox(s2, 5, _T("请输入要修改的信息1.药材名2.简介3.用处4.禁忌"));
+	sscanf_s(s2, "%d", &a);
+	flag=mess.revise(a, s1);
+	if (flag)
+	{
 
+		outtextxy(50, 300, _T("修改成功"));
+	}
+	else
+	{
+		outtextxy(50, 300, _T("未查询到该药材"));
+	}
+	WaitUser();
+}
+void inquiry()
+{
+	int flag = 0, a;
+	char s1[100], s2[5];
 
+	outtextxy(50, 100, _T("请输入要要查询的药材名称"));
+	InputBox(s1, 5, _T("请输入要查询的药材名称"));
+	Medicine *ptr= mess.inquiry(s1);
+	Show_Detail(*ptr);
+	if (flag)
+	{
+		outtextxy(50, 300, _T("修改成功"));
+	}
+	else
+	{
+		outtextxy(50, 300, _T("未查询到该药材"));
+	}
+	WaitUser();
+}
 
 
 

@@ -8,19 +8,9 @@
 #include <iomanip>
 #include<windows.h>
 using namespace std;
-struct UsrInfo//用户名的账户和密码信息
-{
-	char UsrName[20];
-	char Psword[20];
-};
 
-/*
 
-注意我的文件中用户名是一行，密码是一样。在注册的时候只需要看用户名，不需要看密码是不是相符，所以设置i为计数变量，当i不能整除2
 
-的时候是访问用户名的时候，当i整除2的时候是访问密码的时候。读入密码这一行直接跳出去就行了。
-
-*/
 
 int user::regisiter()
 {//注册程序
@@ -63,8 +53,7 @@ int user::regisiter()
 
 		fout.close();
 		::MessageBox(NULL, "注册成功", "恭喜", MB_SETFOREGROUND);
-		login();
-		return 1;//注册成功
+		
 
 	}
 
@@ -75,8 +64,8 @@ int user::regisiter()
 
 
 
-	 InputBox(ID, 128, _T("请输入账号:"), false);
-	 InputBox(password, 20, _T("请输入密码:"), false);
+	 InputBox(ID, 128, _T("登陆请输入账号:"), false);
+	 InputBox(password, 20, _T("登陆请输入密码:"), false);
 
 	string temp1;
 
@@ -137,28 +126,28 @@ int user::regisiter()
 	 sscanf_s(s1, "%d", &a);
 	 switch (a)
 	 {
-	 case 1:
-	 {
-		 regisiter();
-		 break;
-	 }
-	 case 2:
-	 {
-		temp2=login();
-		break;
-	 }
-	 case 3:
-	 {
-		 exit(-1);
-		 break;
-	 }
+		 case 1:
+		 {
+			 regisiter();
+			 break;
+		 }
+		 case 2:
+		 {
+			temp2=login();
+			break;
+		 }
+		 case 3:
+		 {
+			 exit(-1);
+			 break;
+		 }
 
 	 }
-	 if (temp2 == 1||temp1==1)
-		 return 1;//登陆成功
-
+	 if (temp2 == 1&& authority==0)
+		 return 1;//登陆成功(普通用户)
+	 if (temp2 == 1 && authority == 1)
+		 return 1;//登陆成功(管理员)
 	 else begin();
-
  }
 
 	 

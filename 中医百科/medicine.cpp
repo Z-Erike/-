@@ -81,6 +81,7 @@ char *Medicine::get_usage()
 }
 
 
+
 Message::Message()
 {
 	maxnum = 0;
@@ -122,25 +123,113 @@ int Message::get_max()
 {
 	return maxnum;
 }
-void Message::Delete(char s[])
+int Message::Delete(char s[])
 {
-	ofstream out("data2.txt");
+	int flag=0;
+	ofstream out("data2.txt",ios::trunc);
 	ifstream in("data.txt");
+	Medicine *ptr=first;
 	char temp[1000];
+	for (int i = 0; i < maxnum; i++)
+	{
+	
+		if (ptr->name == s)
+		{
+			flag = 1;
+			break;
+		}
+		ptr = ptr->next;
+	}
+	if (flag==0)
+	{
+		return 0;
+	}
 	while (!in.eof())
 	{
+		
 		in.getline(temp, sizeof(temp));
+		if (strcmp(s, temp))
+		{
+			in.getline(temp, sizeof(temp));
+			in.getline(temp, sizeof(temp));
+			in.getline(temp, sizeof(temp));
+			in.getline(temp, sizeof(temp));
+			continue;
+		}
 		out << temp << endl;
-		last->input(in);
-		if (last->name[0] == '\0')
-			break;
-		last->next = new Medicine;
-		last = last->next;
+	
 	}
-	if (strcmp(s, last->name))
-	{
-
-	}
-
+	out.close();
 	in.close();
+	fstream in1("data2.txt");
+	ofstream out1("data.txt",ios::trunc|ios::out);
+	while (!in1.eof())
+	{
+		in1.getline(temp, sizeof(temp));
+		out1 << temp << endl;
+	}
+	out1.close();
+	in1.close();
+	return flag;
+
+
 }
+int Message::revise(int n,char s[])
+{
+	int flag = 0;
+	Medicine *ptr=first;
+	char temp[1000];
+	for (int i = 0; i < maxnum; i++)
+	{
+		
+		if (ptr->name == s)
+		{
+			flag = 1;
+			break;
+		}
+		ptr = ptr->next;
+	}
+	if (n = 1)
+	{
+		InputBox(temp, 1000, _T("ÇëÊäÈëÒ©²ÄÃû"));
+		strcpy_s(ptr->name, temp);
+		flag = 1;
+	}
+	if (n = 2)
+	{
+		InputBox(temp, 1000, _T("ÇëÊäÈë¼ò½é"));
+		strcpy_s(ptr->introduction, temp);
+		flag = 1;
+	}
+	if (n = 3)
+	{
+		InputBox(temp, 1000, _T("ÇëÊäÈëÓÃÍ¾"));
+		strcpy_s(ptr->usage, temp);
+		flag = 1;
+	}
+	if (n = 4)
+	{
+		InputBox(temp, 1000, _T("ÇëÊäÈë½û¼É"));
+		strcpy_s(ptr->clash, temp);
+		flag = 1;
+	}
+	return flag;
+
+}
+Medicine *Message::inquiry(char s[])
+{
+	int flag = 0;
+	Medicine *ptr=first;
+	for (int i = 0; i < maxnum; i++)
+	{
+		
+		if (ptr->name == s)
+		{
+			flag = 1;
+			break;
+		}
+		ptr = ptr->next;
+	}
+	return ptr;
+}
+
