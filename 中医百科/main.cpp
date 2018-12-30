@@ -262,10 +262,9 @@ int Show_All(int page)              //严重问题（第一个是空的）
 	}
 	FlushBatchDraw();             //将绘制完成的图像显示在绘画板上
 	MOUSEMSG m;
+	
 	while (1)
 	{
-
-
 		/*m = GetMouseMsg();
 		if ((x[0] * Width <= m.x) && (m.x <= x[0] * Width + 5 * Width))
 		{
@@ -688,6 +687,20 @@ bool kmp_search(string text, string m, int &pos)
 	}
 	if (tp == text.size())
 		return false;
+}
+
+void Delete()
+{
+	char s1[50], s2[100], temp[100];
+	int i, pot = 0, flag = 0;
+	putimage(0, 0, &bg3);
+	settextstyle(40, 0, _T("黑体"));
+	outtextxy(50, 100, _T("请输入要删除的药材名称"));
+	FlushBatchDraw();
+	InputBox(s1, 25, _T("请输入药名"), false);
+	
+	mess.Delete(s1);
+	WaitUser();
 }
 
 

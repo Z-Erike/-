@@ -51,6 +51,7 @@ public:
 	Medicine *find(int o);			  //定位到单个节点(显示中用到）
 	int show_num();                   //返回一共多少种药材
 	int get_max();
+	void Delete(char s[]);
 
 };
 

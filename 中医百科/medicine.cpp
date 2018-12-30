@@ -105,6 +105,7 @@ Message::Message()
 		last = last->next;
 	}
 	maxnum--;
+	in.close();
 }
 Medicine *Message::find(int m)
 {
@@ -120,4 +121,26 @@ Medicine *Message::find(int m)
 int Message::get_max()
 {
 	return maxnum;
+}
+void Message::Delete(char s[])
+{
+	ofstream out("data2.txt");
+	ifstream in("data.txt");
+	char temp[1000];
+	while (!in.eof())
+	{
+		in.getline(temp, sizeof(temp));
+		out << temp << endl;
+		last->input(in);
+		if (last->name[0] == '\0')
+			break;
+		last->next = new Medicine;
+		last = last->next;
+	}
+	if (strcmp(s, last->name))
+	{
+
+	}
+
+	in.close();
 }
