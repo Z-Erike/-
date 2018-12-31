@@ -61,25 +61,14 @@ void Medicine::Load_image()
 	cout << picture;
 	loadimage(&medicine_bg, picture);
 }
-void Medicine::output()
-{
-	settextstyle(20, 0, _T("Î¢ÈíÑÅºÚ"));
-	RECT r1 = { 2 * Width,2 * HIGH,9 * Width,5 * HIGH };//Êä³öÐÕÃû
-	RECT r2 = {2*Width,7*HIGH,19*Width,21*HIGH};
-	RECT r3 = { 2 * Width,22*HIGH,19 * Width,25*HIGH };
-	RECT r4 = { 2 * Width ,26*HIGH,19 * Width,28*HIGH };
-
-	drawtext(name, &r1, NULL);
-	drawtext(introduction, &r2, DT_WORDBREAK);
-	drawtext(usage, &r3, DT_WORDBREAK);
-	drawtext(clash, &r4, DT_WORDBREAK);
-
-}
 char *Medicine::get_usage()
 {
 	return usage;	
 }
+void Medicine::output()
+{
 
+}
 
 
 Message::Message()

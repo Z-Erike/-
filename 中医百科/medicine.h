@@ -5,7 +5,7 @@ using namespace std;
 
 #define NUM1 128
 #define NUM2 1024
-#define Width 30        //每格宽度
+  #define Width 30        //每格宽度
 #define HIGH 20         //每格长度
 
 class Medicine

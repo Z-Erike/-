@@ -32,7 +32,9 @@ void HideCursor();							//隐藏光标函数
 void ClearScreen();							//清除debug信息
 void ClearScreen1();                        //清除屏幕信息
 void Menu();								//主菜单函数
+void Menu(int a);							//主菜单（管理员）
 void Init();								//初始化界面
+void Init(int a);							//初始化界面（管理员）
 void WaitView(int iCurPage);				//浏览数据时等待用户操作
 void WaitUser();							//等待用户操作
 void Cure();								//根据病症搜索药材
@@ -43,6 +45,7 @@ bool kmp_search(string text, string m, int &pos);//kmp算法查找病症
 const vector<int> * kmp_next(string &m);	//寻找下一个
 void Delete();								//删除
 void revise();								//修改
+void inquiry();
 
 int main()									//主函数
 {
@@ -50,11 +53,18 @@ int main()									//主函数
 	user u;
 	flag=u.begin();
 	initgraph(Width*NUM, High*NUM);
-	if (flag == 1)
+	if (flag == 1)//正常用户
 	{
 		while (1)
 		{
 			Init();
+		}
+	}
+	if (flag == 2)//管理员
+	{
+		while (1)
+		{
+			Init(1);
 		}
 	}
 	closegraph();
@@ -132,7 +142,41 @@ void ClearScreen1()							//清除画布信息
 	setbkmode(TRANSPARENT);
 	
 }
+
 void Init()
+{
+	HWND hwnd = GetHWnd();//获取窗口句柄
+	SetWindowText(hwnd, _T("中医药百科"));
+	loadimage(&bg1, _T("img\\bg1.jpg"));   //读取图片信息
+	loadimage(&bg2, _T("img\\bg2.jpg"));
+	loadimage(&bg3, _T("img\\bg3.jpg"));
+	loadimage(&bg4, _T("img\\bg4.jpg"));
+	loadimage(&bg1_1, _T("img\\bg1_1.jpg"));
+	loadimage(&bg1_2, _T("img\\bg1_2.jpg"));
+	loadimage(&bg1_3, _T("img\\bg1_3.jpg"));
+	loadimage(&bg1_4, _T("img\\bg1_4.jpg"));
+	loadimage(&bg_back, _T("img\\back.jpg"));
+	loadimage(&bg_goon, _T("img\\goon.jpg"));
+	loadimage(&bg_last, _T("img\\last.jpg"));
+	loadimage(&bg_next, _T("img\\next.jpg"));
+	loadimage(&bg_back_0, _T("img\\back_0.jpg"));
+	loadimage(&bg_goon_0, _T("img\\goon_0.jpg"));
+	loadimage(&bg_last_0, _T("img\\last_0.jpg"));
+	loadimage(&bg_next_0, _T("img\\next_0.jpg"));
+	loadimage(&bg1_1_0, _T("img\\bg1_1_0.jpg"));
+	loadimage(&bg1_2_0, _T("img\\bg1_1_0.jpg"));
+	loadimage(&bg1_3_0, _T("img\\bg1_1_0.jpg"));
+	loadimage(&bg1_4_0, _T("img\\bg1_1_0.jpg"));
+	while (menuflag == 0)
+		Menu();			//初始化菜单界面
+	while (menuflag == 1)
+		Show_All(1);		//	显示页面
+	while (menuflag == 2)
+		Cure();			//寻医问病界面
+	while (menuflag == 3)
+		exit(-1);		//退出
+}
+void Init(int a)
 {
 	
 	//背景音乐（暂未启用）
@@ -162,18 +206,90 @@ void Init()
 	loadimage(&bg1_4_0, _T("img\\bg1_1_0.jpg"));
 
 
-	BeginBatchDraw();
 	
-	while (menuflag == 0)
-		Menu();			//初始化菜单界面
-	while (menuflag == 1)
-		Show_All(1);		//	显示页面
-	while (menuflag == 2)
-		Cure();			//寻医问病界面
+	
+	while (menuflag ==4)
+		Menu(1);			//初始化菜单界面(管理员版)
+	while (menuflag == 5)
+		Delete();			//	删除
+	while (menuflag == 6)
+		inquiry();	//	修改页面
+	while (menuflag == 7)
+		revise();	//	修改页面
+	while (menuflag == 8)
+		Input();		//	修改页面
 	while (menuflag == 3)
 		exit(-1);		//退出
 	
 	
+}
+void Menu(int a)
+{
+	BeginBatchDraw();
+	setbkmode(TRANSPARENT);                  //设定图片模式为衬与文字下方
+	putimage(0, 0, &bg1);
+	settextstyle(40, 0, _T("黑体"));
+	int Main_x = 500;                       //更改此处改变所有主界面文字横坐标
+	putimage(Main_x, 100, &bg1_1);
+	putimage(Main_x, 200, &bg1_2);
+	putimage(Main_x, 300, &bg1_3);
+	putimage(Main_x, 400, &bg1_4);
+	FlushBatchDraw();
+	Sleep(100);
+
+	MOUSEMSG m;//鼠标结构体
+
+	while (MouseHit())                       //当鼠标点击的时候根据鼠标坐标进行判定
+	{
+		m = GetMouseMsg();
+		if (((Main_x <= m.x) && (m.x <= Main_x + 150)) && (m.uMsg == WM_LBUTTONDOWN))
+		{
+			if ((100 <= m.y) && (m.y <= 160))
+			{
+				putimage(Main_x, 100, &bg1_1_0);
+				FlushBatchDraw();
+				Sleep(100);
+				Delete();				//删除
+				menuflag = 1;
+				return;
+			}
+			if ((200 <= m.y) && (m.y <= 260))
+			{
+				putimage(Main_x, 100, &bg1_2_0);
+				FlushBatchDraw();
+				Sleep(100);
+				inquiry();
+				menuflag = 2;
+				return;
+			}
+			if ((300 <= m.y) && (m.y <= 360))
+			{
+				putimage(Main_x, 100, &bg1_3_0);
+				FlushBatchDraw();
+				Sleep(100);
+				revise();	
+				menuflag = 3;
+			}
+			if ((400 <= m.y) && (m.y <= 460))
+			{
+				putimage(Main_x, 100, &bg1_3_0);
+				FlushBatchDraw();
+				Sleep(100);
+				Input();
+				menuflag = 3;
+			}
+			if ((500 <= m.y) && (m.y <= 560))
+			{
+				putimage(Main_x, 100, &bg1_3_0);
+				FlushBatchDraw();
+				Sleep(100);
+				exit(-1);
+				menuflag = 3;
+			}
+			
+
+		}
+	}
 }
 void Menu()									//主菜单
 {
@@ -237,6 +353,7 @@ void Menu()									//主菜单
 		}
 	
 }
+
 int Show_All(int page)              //严重问题（第一个是空的）
 {
 	int x[3] = { 2,9,17 }, y[3] = { 4,14,24 };  //每个选项在的格子
@@ -714,7 +831,7 @@ void Delete()
 	
 	char s1[50];
 	int i, pot = 0, flag = 0;
-	putimage(0, 0, &bg3);
+	putimage(0, 0, &bg4);
 	settextstyle(40, 0, _T("微软雅黑"));
 	outtextxy(50, 100, _T("请输入要删除的药材名称"));
 	FlushBatchDraw();
@@ -734,6 +851,7 @@ void Delete()
 }
 void revise()
 {
+	putimage(0, 0, &bg4);
 	int flag = 0,a;
 	char s1[100],s2[5];
 	outtextxy(50, 100, _T("请输入要要修改的药材名称"));
@@ -756,7 +874,7 @@ void inquiry()
 {
 	int flag = 0, a;
 	char s1[100], s2[5];
-
+	putimage(0, 0, &bg4);
 	outtextxy(50, 100, _T("请输入要要查询的药材名称"));
 	InputBox(s1, 5, _T("请输入要查询的药材名称"));
 	Medicine *ptr= mess.inquiry(s1);

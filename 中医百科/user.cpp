@@ -31,7 +31,8 @@ int user::regisiter()
 
 		i++;
 
-		if (i % 2 == 0) continue;//访问的是密码这一行，跳出。
+		if (i % 3 == 2) continue;//访问的是密码这一行，跳出。
+		if (i % 3 == 0) continue;//访问的如果是权限，跳出
 
 		if (!strcmp(ID, temp.c_str())) flag = 1;//flag=1说明用户名已经被注册了
 
@@ -50,6 +51,7 @@ int user::regisiter()
 		fout << ID << endl;//向文件写入注册者的用户名，然后换一行
 
 		fout << password << endl;//写入密码，换行
+		fout << "0" << endl;
 
 		fout.close();
 		::MessageBox(NULL, "注册成功", "恭喜", MB_SETFOREGROUND);
@@ -82,7 +84,8 @@ int user::regisiter()
 	while (std::getline(fin, temp1))
 
 	{
-		std::getline(fin, temp2);//一次读进去两行，分别是用户名和密码
+		std::getline(fin, temp2);//一次读进去三行，分别是用户名和密码和权限
+		
 
 		if (!strcmp(ID, temp1.c_str())) {//有这个用户名了，接下来看看密码是不是相符的
 
@@ -104,15 +107,16 @@ int user::regisiter()
 
 	if (!existname) {
 		::MessageBox(NULL, "未查询到该用户", "错误", MB_SETFOREGROUND);
-		return 2;//没有账户名
+		return 0;//没有账户名
 
 	}
 
 	else {
 
 		if (match) return 1;
+		if (match&&authority) return 2;
 		::MessageBox(NULL, "密码错误", "错误", MB_SETFOREGROUND);
-		 return 3;//用户名和密码不匹配
+		 return 0;//用户名和密码不匹配
 
 	}
 
@@ -143,10 +147,10 @@ int user::regisiter()
 		 }
 
 	 }
-	 if (temp2 == 1&& authority==0)
+	 if (temp2 == 1)
 		 return 1;//登陆成功(普通用户)
 	 if (temp2 == 1 && authority == 1)
-		 return 1;//登陆成功(管理员)
+		 return 2;//登陆成功(管理员)
 	 else begin();
  }
 
