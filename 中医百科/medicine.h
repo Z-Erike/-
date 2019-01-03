@@ -15,7 +15,6 @@ class Medicine
 	~Medicine() {}  //析构函数
 public:
 	void input(ifstream &in);
-	Medicine* get_next();
 	void output();
 	void Load_image();
 	void Write_Data();						//向文件中填写
@@ -43,13 +42,7 @@ private:
 	static int maxnum;
 public:
 	Message();
-	Medicine *Search(const char *x);				 //查找
-	void printf();					  //显示所有药材
-	Medicine treat();                 //根据病症搜索药材kmp算法
-	Medicine stick();                 //置顶
-	Medicine output();                //输出
 	Medicine *find(int o);			  //定位到单个节点(显示中用到）
-	int show_num();                   //返回一共多少种药材
 	int get_max();
 	int Delete(char s[]);
 	int revise(int n, char s[]);

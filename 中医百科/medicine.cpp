@@ -37,13 +37,13 @@ void Medicine::input(ifstream &in)
 void Medicine::Write_Data()
 {
 	ofstream out;
-	out.open("book.dat", ios::binary | ios::app);
+	out.open("data.txt",ios::app);
 	try{										//该位置很可能会出现问题
-		out.write(name, NUM1);//写入图书的信息
-		out.write(introduction, NUM2);
-		out.write(usage, NUM1);
-		out.write(clash, NUM1);
-		out.write(picture, NUM1);
+		out << name << endl;
+		out << introduction << endl;
+		out << usage << endl;
+		out << clash << endl;
+		out << picture << endl;
 	}
 	catch (...) {//catch(…)能够捕获多种数据类型的异常对象
 		throw "file error occurred";
@@ -67,6 +67,17 @@ char *Medicine::get_usage()
 }
 void Medicine::output()
 {
+	settextstyle(20, 0, _T("黑体"));
+	RECT r1 = {3*Width,3*HIGH,9*Width,5*HIGH};
+	RECT r2 = {3*Width,7*HIGH,19*Width,21*HIGH};
+	RECT r3 = { 3 * Width ,22*HIGH,19 * Width ,25*HIGH};
+	RECT r4 = { 3 * Width ,26*HIGH,19 * Width,28*HIGH };
+	drawtext(name, &r1, DT_WORDBREAK);
+	drawtext(introduction, &r2, DT_WORDBREAK);
+	drawtext(usage, &r3, DT_WORDBREAK);
+	drawtext(clash, &r4, DT_WORDBREAK);
+
+
 
 }
 
@@ -122,7 +133,7 @@ int Message::Delete(char s[])
 	for (int i = 0; i < maxnum; i++)
 	{
 	
-		if (ptr->name == s)
+		if (strcmp(ptr->name, s) == 0)
 		{
 			flag = 1;
 			break;
@@ -137,7 +148,7 @@ int Message::Delete(char s[])
 	{
 		
 		in.getline(temp, sizeof(temp));
-		if (strcmp(s, temp))
+		if (strcmp(s, temp)==0)
 		{
 			in.getline(temp, sizeof(temp));
 			in.getline(temp, sizeof(temp));
@@ -165,60 +176,103 @@ int Message::Delete(char s[])
 }
 int Message::revise(int n,char s[])
 {
+	ofstream out("data2.txt", ios::trunc);
+	ifstream in("data.txt");
+	Medicine *ptr = first;
 	int flag = 0;
-	Medicine *ptr=first;
-	char temp[1000];
+	char temp[1000],temp1[1000];//temp是用来将data的数据导入data2中的，temp1是用来将记录用户修改的
 	for (int i = 0; i < maxnum; i++)
 	{
 		
-		if (ptr->name == s)
+		if (strcmp(ptr->name, s) == 0)
 		{
 			flag = 1;
 			break;
 		}
 		ptr = ptr->next;
 	}
-	if (n = 1)
+	if (flag == 0)
 	{
-		InputBox(temp, 1000, _T("请输入药材名"));
-		strcpy_s(ptr->name, temp);
-		flag = 1;
+		return 0;
 	}
-	if (n = 2)
+	if (n == 1)	   InputBox(temp1, sizeof(temp1), _T("请输入药材名"));
+	if (n == 2)		InputBox(temp1, sizeof(temp1), _T("请输入简介"));
+	if (n ==3)      InputBox(temp1, sizeof(temp1), _T("请输入用途"));
+	if (n == 4)    InputBox(temp1, sizeof(temp1), _T("请输入禁忌"));
+	while (!in.eof())
 	{
-		InputBox(temp, 1000, _T("请输入简介"));
-		strcpy_s(ptr->introduction, temp);
-		flag = 1;
+
+		in.getline(temp, sizeof(temp));
+		
+		if (strcmp(s, temp) == 0)
+		{
+			if (n == 1)
+			{
+				out << temp1 << endl;
+			}
+			if (n == 2)
+			{
+				out << temp<< endl;
+				in.getline(temp, sizeof(temp));
+				out << temp1 << endl;
+			}
+			if (n == 3)
+			{
+				out << temp << endl;
+				in.getline(temp, sizeof(temp));
+				out << temp << endl;
+				in.getline(temp, sizeof(temp));
+				out << temp1 << endl;
+			}
+			if (n == 4)
+			{
+				out << temp << endl;
+				in.getline(temp, sizeof(temp));
+				out << temp << endl;
+				in.getline(temp, sizeof(temp));
+				out << temp << endl;
+				in.getline(temp, sizeof(temp));
+				out << temp1 << endl;
+			}
+			continue;
+		}
+		
+		out << temp << endl;
+
 	}
-	if (n = 3)
+
+	out.close();
+	in.close();
+	fstream in1("data2.txt");
+	ofstream out1("data.txt", ios::trunc | ios::out);
+	while (!in1.eof())
 	{
-		InputBox(temp, 1000, _T("请输入用途"));
-		strcpy_s(ptr->usage, temp);
-		flag = 1;
+		in1.getline(temp, sizeof(temp));
+		out1 << temp << endl;
 	}
-	if (n = 4)
-	{
-		InputBox(temp, 1000, _T("请输入禁忌"));
-		strcpy_s(ptr->clash, temp);
-		flag = 1;
-	}
+	out1.close();
+	in1.close();
 	return flag;
 
+
+	
 }
 Medicine *Message::inquiry(char s[])
 {
-	int flag = 0;
+	
 	Medicine *ptr=first;
+
 	for (int i = 0; i < maxnum; i++)
 	{
 		
-		if (ptr->name == s)
+		if (strcmp(ptr->name,s)==0)
 		{
-			flag = 1;
-			break;
+			
+			return ptr;
 		}
 		ptr = ptr->next;
 	}
-	return ptr;
+	
+	return NULL;
 }
 

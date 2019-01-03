@@ -72,7 +72,7 @@ int user::regisiter()
 	string temp1;
 
 	string temp2;
-
+	char temp3[10];
 	int existname = 0;
 
 	int match = 0;
@@ -81,11 +81,11 @@ int user::regisiter()
 
 	ifstream fin("User.txt", ios::in);
 
-	while (std::getline(fin, temp1))
+	while (getline(fin, temp1))
 
 	{
-		std::getline(fin, temp2);//一次读进去三行，分别是用户名和密码和权限
-		
+	getline(fin, temp2);//一次读进去三行，分别是用户名和密码和权限
+	fin.getline(temp3,sizeof(temp3));
 
 		if (!strcmp(ID, temp1.c_str())) {//有这个用户名了，接下来看看密码是不是相符的
 
@@ -94,8 +94,14 @@ int user::regisiter()
 			if (!strcmp(password, temp2.c_str())) {//相符
 
 				match = 1;
+				
+				sscanf_s(temp3, "%d", &authority);
+
 
 				break;
+				
+
+
 
 			}
 
@@ -114,7 +120,7 @@ int user::regisiter()
 	else {
 
 		if (match) return 1;
-		if (match&&authority) return 2;
+		
 		::MessageBox(NULL, "密码错误", "错误", MB_SETFOREGROUND);
 		 return 0;//用户名和密码不匹配
 
@@ -147,7 +153,7 @@ int user::regisiter()
 		 }
 
 	 }
-	 if (temp2 == 1)
+	 if (temp2 == 1&&authority==0)
 		 return 1;//登陆成功(普通用户)
 	 if (temp2 == 1 && authority == 1)
 		 return 2;//登陆成功(管理员)
